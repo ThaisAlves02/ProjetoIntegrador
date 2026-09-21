@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import ttk
 
 #----------------------------------------------------------
 # CONFIGURAÇÃO DE COR
@@ -47,3 +48,29 @@ def tela_clientes(container):
         padx=32,
         pady=40
     )
+
+    #----------------------------------------------------------
+    # LISTA DE CLIENTES
+    #----------------------------------------------------------
+
+    frame_lista_clientes = ctk.CTkFrame(frame_conteudo)
+    frame_lista_clientes.pack(padx=20, pady=15, fill="both", expand=True)
+
+    colunas = ("nome", "telefone", "cpf", "email", "endereco", "acoes")
+    tree = ttk.Treeview(frame_lista_clientes, columns=colunas, show="headings", height=10)
+
+    tree.heading("nome", text="Nome")
+    tree.heading("telefone", text="Telefone")
+    tree.heading("cpf", text="CPF")
+    tree.heading("email", text="E-mail")
+    tree.heading("endereco", text="Endereço")
+    tree.heading("acoes", text="Ações")
+
+    tree.column("nome", width=150)
+    tree.column("telefone", width=120)
+    tree.column("email", width=180)
+    tree.column("endereco", width=140)
+    tree.column("acoes", width=140)
+
+    tree.pack(fill="both", expand=True, padx=5, pady=5)
+
