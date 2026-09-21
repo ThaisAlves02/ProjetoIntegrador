@@ -21,76 +21,29 @@ def tela_clientes(container):
     titulo.pack(
         anchor="w",
         padx=32,
-        pady=30
+        pady=(30,0)
     )
 
-    frame_cadastro = ctk.CTkFrame(
-        frame_conteudo, 
-        width=500,
-        height=400,
-        fg_color=cor_frame,
-        border_width=1,
-        border_color=borda_frame
+    subtitulo = ctk.CTkLabel(
+        frame_conteudo,
+        text="Cadastro de clientes com nome, telefone, endereço, e-mail e CPF.",
+        font=("Arial", 14)
     )
-    
-    frame_cadastro.pack_propagate(False) 
-    
-    frame_cadastro.pack(expand=True, padx=32, pady=(0, 32))
-
-    titulo = ctk.CTkLabel(
-        frame_cadastro,
-        text="Cadastre-se",
-        font=("Arial", 18, "bold")
-        )
-    titulo.pack(padx = 50, pady = (35,25))
-
-    entry_nome = ctk.CTkEntry(
-        frame_cadastro,
-        placeholder_text="Nome",
-        border_width=2,
-        width=420,
-        height=40,
-        text_color="black",
-        fg_color="white",
-        border_color="gray",
+    subtitulo.pack( 
+        anchor="w",
+        padx=32,
+        pady=0
     )
-    entry_nome.pack(pady = 8)
 
-    entry_sobrenome = ctk.CTkEntry(
-        frame_cadastro,
-        placeholder_text="Sobrenome",
-        border_width=2,
-        width=420,
-        height=40,
-        text_color="black",
-        fg_color="white",
-        border_color="gray",
+    botao_novo_cadastro = ctk.CTkButton(
+        frame_conteudo,
+        text="Novo",
+        fg_color= "#262753",
+        font=("Arial", 14, "bold"),
+        corner_radius= 8,
     )
-    entry_sobrenome.pack(pady = 8)
-
-    entry_telefone = ctk.CTkEntry(
-        frame_cadastro,
-        placeholder_text="(DDD) 99999-9999",
-        border_width=2,
-        width=420,
-        height=40,
-        text_color="black",
-        fg_color="white",
-        border_color="gray",
+    botao_novo_cadastro.pack(
+        anchor="w",
+        padx=32,
+        pady=40
     )
-    entry_telefone.pack(pady = 8)
-
-    entry_email = ctk.CTkEntry(
-        frame_cadastro,
-        placeholder_text="E-mail (Opcional)",
-        border_width=2,
-        width=420,
-        height=40,
-        text_color="black",
-        fg_color="white",
-        border_color="gray",
-    )
-    entry_email.pack(pady = 8)
-
-    botao_salvar = ctk.CTkButton(frame_cadastro, width=420, height=42, text="Salvar Cliente", font=("Arial", 14, "bold"), fg_color=cor_botao, hover_color="#A0BEDD" )
-    botao_salvar.pack(pady=(30, 0))
