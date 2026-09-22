@@ -28,7 +28,7 @@ def tela_clientes(container):
 
     subtitulo = ctk.CTkLabel(
         frame_conteudo,
-        text="Cadastro de clientes com nome, telefone, endereço, e-mail e CPF.",
+        text="Cadastro de clientes com nome, CPF, telefone, e-mail e endereço.",
         text_color=sub_titulo,
         font=("Arial", 14)
     )
@@ -39,7 +39,7 @@ def tela_clientes(container):
     )
 
 #----------------------------------------------------------
-# TABELA - NOME, TELEFONE, E-MAIL E AÇÕES
+# TABELA - NOME, CPF, TELEFONE, E-MAIL E AÇÕES
 #----------------------------------------------------------
     nome = ctk.CTkLabel(
         frame_conteudo,
@@ -48,6 +48,14 @@ def tela_clientes(container):
         text_color="#52677F"
     )
     nome.place(x=100, y=125)
+
+    cpf = ctk.CTkLabel(
+        frame_conteudo,
+        text="CPF",
+        font=ctk.CTkFont(size=15, weight="bold"),
+        text_color="#52677F"
+    )
+    cpf.place(x=200, y=125)
    
     telefone = ctk.CTkLabel(
         frame_conteudo,
@@ -56,6 +64,14 @@ def tela_clientes(container):
         text_color="#52677F"
     )
     telefone.place(x=300, y=125)
+
+    endereco = ctk.CTkLabel(
+        frame_conteudo,
+        text="Endereço",
+        font=ctk.CTkFont(size=15, weight="bold"),
+        text_color="#52677F"
+    )
+    endereco.place(x=400, y=125)
    
     email = ctk.CTkLabel(
         frame_conteudo,
