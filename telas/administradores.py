@@ -44,7 +44,7 @@ def tela_administradores(container):
         text_color="#52677F"
     )
 
-    telefone.place(x=300, y=125)
+    telefone.place(x=200, y=125)
 
 
     email = ctk.CTkLabel(
@@ -54,7 +54,17 @@ def tela_administradores(container):
         text_color="#52677F"
     )
 
-    email.place(x=530, y=125)
+    email.place(x=380, y=125)
+
+
+    endereco = ctk.CTkLabel(
+        container,
+        text="Endereço",
+        font=ctk.CTkFont(size=15, weight="bold"),
+        text_color="#52677F"
+    )
+
+    endereco.place(x=560, y=125)
 
 
     acoes = ctk.CTkLabel(
@@ -64,12 +74,37 @@ def tela_administradores(container):
         text_color="#52677F"
     )
 
-    acoes.place(x=750, y=125)
+    acoes.place(x=720, y=125)
+
+
+    # FUNÇÃO PARA ESCONDER A TABELA
+
+    def esconder_tabela():
+
+        nome.place_forget()
+        telefone.place_forget()
+        email.place_forget()
+        endereco.place_forget()
+        acoes.place_forget()
+
+
+    # FUNÇÃO PARA MOSTRAR A TABELA
+
+    def mostrar_tabela():
+
+        nome.place(x=30, y=125)
+        telefone.place(x=200, y=125)
+        email.place(x=380, y=125)
+        endereco.place(x=560, y=125)
+        acoes.place(x=720, y=125)
 
 
     # FUNÇÃO DO BOTÃO NOVO
 
     def novo_cadastro():
+
+        # Esconde os títulos da tabela
+        esconder_tabela()
 
         frame_cadastro = ctk.CTkFrame(
             container,
@@ -84,6 +119,9 @@ def tela_administradores(container):
             y=80
         )
 
+
+
+        # TÍTULO DO FORMULÁRIO
 
         label_titulo = ctk.CTkLabel(
             frame_cadastro,
@@ -166,16 +204,32 @@ def tela_administradores(container):
 
         # Botão Cadastrar
 
+        def cadastrar():
+
+            # Por enquanto apenas fecha o formulário
+            # Depois vamos colocar aqui o Controller
+            # para salvar os dados no JSON.
+
+            frame_cadastro.destroy()
+            mostrar_tabela()
+
+
         cadastrar_botao = ctk.CTkButton(
             frame_cadastro,
             text="Cadastrar",
             font=ctk.CTkFont(size=14, weight="bold"),
             width=190,
-            height=40
+            height=40,
+            command=cadastrar
         )
 
         cadastrar_botao.place(x=30, y=310)
 
+        # FUNÇÃO CANCELAR:
+        
+        def cancelar_cadastro():
+            frame_cadastro.destroy()
+            mostrar_tabela()
 
         # Botão Cancelar
 
@@ -186,7 +240,8 @@ def tela_administradores(container):
             width=190,
             height=40,
             fg_color="#555555",
-            hover_color="#444444"
+            hover_color="#444444",
+            command=cancelar_cadastro
         )
 
         cancelar_botao.place(x=240, y=310)
@@ -206,8 +261,5 @@ def tela_administradores(container):
         corner_radius=6,
         command=novo_cadastro
     )
-
-    novo.place(x=750, y=35)
-
 
     novo.place(x=750, y=35)
