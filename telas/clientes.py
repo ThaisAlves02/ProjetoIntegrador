@@ -1,5 +1,6 @@
 import customtkinter as ctk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+import re
 
 #----------------------------------------------------------
 # CONFIGURAÇÃO DE COR
@@ -123,6 +124,19 @@ def tela_clientes(container):
     linha_tabela.place(x=20, y=12)
 
 #----------------------------------------------------------
+# FUNÇÕES VALIDAR E-MAIL E VALIDAR TELEFONE
+#----------------------------------------------------------
+
+    def validar_email(email):
+        padrao = r"^[\w\.\-]+@[\w\-]+\.[a-zA-Z]{2,}$"
+        return re.match(padrao, email) is not None
+
+
+    def validar_telefone(telefone):
+        padrao = r"^(\(\d{2}\)\s?)?\d{4,5}-?\d{4}$"
+        return re.match(padrao, telefone) is not None
+
+#----------------------------------------------------------
 # FUNÇÃO BOTÃO NOVO
 #----------------------------------------------------------
     def novo_cadastro():
@@ -195,13 +209,35 @@ def tela_clientes(container):
         )
         entry_email.pack(pady = 8)
 
+        def executar_cadastro():
+            nome = entry_nome.get().strip()
+            sobrenome = entry_sobrenome.get().strip()
+            telefone = entry_telefone.get().strip()
+            email = entry_email.get().strip()
+
+            if not nome or not sobrenome or not telefone or not email:
+                messagebox.showerror("Erro", "Preencha todos os campos.")
+                return
+
+            if not validar_email(email):
+                messagebox.showerror("Erro", "Email inválido. Use o formato nome@dominio.com")
+                return
+
+            if not validar_telefone(telefone):
+                messagebox.showerror("Erro", "Telefone inválido. Use (85) 99999-9999 ou 85999999999")
+                return
+
+            messagebox.showinfo("Sucesso", "Cliente cadastrado com sucesso!")
+            frame_cadastro.destroy()
+
         # Botão Cadastrar
         cadastrar_botao = ctk.CTkButton(
             frame_cadastro,
             text="Cadastrar",
             font=ctk.CTkFont(size=14, weight="bold"),
             width=190,
-            height=40
+            height=40,
+            command=executar_cadastro
         )
         cadastrar_botao.place(x= 57, y=320)
    
@@ -213,7 +249,8 @@ def tela_clientes(container):
             width=190,
             height=40,
             fg_color="#555555",
-            hover_color="#444444"
+            hover_color="#444444",
+            command=frame_cadastro.destroy
         )
         cancelar_botao.place(x=252, y=320)
    
