@@ -39,56 +39,89 @@ def tela_clientes(container):
     )
 
 #----------------------------------------------------------
-# TABELA - NOME, CPF, TELEFONE, E-MAIL E AÇÕES
+# DESIGN DA TABELA (CABEÇALHO ARREDONDADO)
 #----------------------------------------------------------
-    nome = ctk.CTkLabel(
+    frame_cabecalho = ctk.CTkFrame(
         frame_conteudo,
+        width=800,
+        height=40,
+        fg_color="#F8F9FA",
+        border_width=1,
+        border_color="#E0E0E0",
+        corner_radius=10
+    )
+    frame_cabecalho.place(x=32, y=115)
+
+    nome = ctk.CTkLabel(
+        frame_cabecalho,
         text="Nome",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    nome.place(x=100, y=125)
+    nome.place(x=20, y=8)
 
     cpf = ctk.CTkLabel(
-        frame_conteudo,
+        frame_cabecalho,
         text="CPF",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    cpf.place(x=200, y=125)
+    cpf.place(x=240, y=8)
    
     telefone = ctk.CTkLabel(
-        frame_conteudo,
+        frame_cabecalho,
         text="Telefone",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    telefone.place(x=300, y=125)
+    telefone.place(x=390, y=8)
 
     endereco = ctk.CTkLabel(
-        frame_conteudo,
+        frame_cabecalho,
         text="Endereço",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    endereco.place(x=400, y=125)
+    endereco.place(x=540, y=8)
    
     email = ctk.CTkLabel(
-        frame_conteudo,
+        frame_cabecalho,
         text="E-mail",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    email.place(x=530, y=125)
+    email.place(x=720, y=8)
    
     acoes = ctk.CTkLabel(
-        frame_conteudo,
+        frame_cabecalho,
         text="Ações",
-        font=ctk.CTkFont(size=15, weight="bold"),
+        font=ctk.CTkFont(size=14, weight="bold"),
         text_color="#52677F"
     )
-    acoes.place(x=750, y=125)
-   
+    acoes.place(x=930, y=8)
+
+#----------------------------------------------------------
+# LINHA DE DADOS / STATUS DA TABELA
+#----------------------------------------------------------
+    frame_linhas = ctk.CTkFrame(
+        frame_conteudo,
+        width=800,
+        height=50,
+        fg_color="#FFFFFF",
+        border_width=1,
+        border_color="#E0E0E0",
+        corner_radius=10
+    )
+    frame_linhas.place(x=32, y=154)
+
+    linha_tabela = ctk.CTkLabel(
+        frame_linhas,
+        text="Nenhum cliente cadastrado.",
+        font=ctk.CTkFont(size=14),
+        text_color="#7E8B9B"
+    )
+    linha_tabela.place(x=20, y=12)
+
 #----------------------------------------------------------
 # FUNÇÃO BOTÃO NOVO
 #----------------------------------------------------------
