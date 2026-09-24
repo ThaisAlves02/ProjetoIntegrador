@@ -3,46 +3,32 @@ import customtkinter as ctk
 
 def tela_administradores(container):
 
-    # # TESTE:
-    # administrador_teste = {
-    #     "Nome":"Maria Silva castro Holanda Silva",
-    #     "Telefone":"85 985694857",
-    #     "Email": "mariarosarioalmeidacampos@gmail.com",
-    #     "Endereço": "Rua Limoeironortesulleste nº 10",
-    #     "Ações": "Zeladora"
-    # }
-
-    def cortar_texto(texto, tamanho):
-
-        if len(texto) > tamanho:
-            return texto[:tamanho] + "..."
-
-        return texto
-
+    # =========================================================
     # TÍTULOS
+    # =========================================================
 
-    titulo3 = ctk.CTkLabel(
+    titulo1 = ctk.CTkLabel(
         container,
         text="Administradores",
         font=ctk.CTkFont(size=28, weight="bold"),
         text_color="black",
     )
 
-    titulo3.place(x=30, y=40)
+    titulo1.place(x=30, y=40)
 
 
-    titulo4 = ctk.CTkLabel(
+    titulo2 = ctk.CTkLabel(
         container,
         text="Cadastro de administradores com nome, telefone e e-mail.",
         font=ctk.CTkFont(size=15),
         text_color="#52677F"
     )
 
-    titulo4.place(x=30, y=75)
+    titulo2.place(x=30, y=75)
 
 
     # TABELA
-
+   
     nome = ctk.CTkLabel(
         container,
         text="Nome",
@@ -93,230 +79,313 @@ def tela_administradores(container):
     acoes.place(x=750, y=125)
 
 
-    # DADOS DO ADMINISTRADOR DE TESTE
+    # FUNÇÃO PARA CORTAR TEXTO
 
-#     nome_teste = ctk.CTkLabel(
-#     container,
-#     text=administrador_teste["Nome"],
-#     text_color="black",
-#     anchor="w",
-#     width=150,
-#     height=25
-#     )
+    def cortar_texto(texto, tamanho):
 
-#     nome_teste.place(x=30, y=165)
+        if len(texto) > tamanho:
+            return texto[:tamanho] + "..."
 
+        return texto
 
 
-#     telefone_teste = ctk.CTkLabel(
-#     container,
-#     text=administrador_teste["Telefone"],
-#     text_color="black",
-#     anchor="w",
-#     width=150,
-#     height=25
-# )
+    
+    # LISTA DAS LINHAS DA TABELA
+    
+    # Aqui ficarão os widgets dos administradores que forem
+    # adicionados posteriormente.
 
-#     telefone_teste.place(x=200, y=165)
+    linhas = []
 
 
+    
+    # ADICIONAR ADMINISTRADOR NA TABELA
+    
 
-#     email_teste = ctk.CTkLabel(
-#         container,
-#         text=administrador_teste["Email"],
-#         text_color="black"
-#     )
-#     email_teste.place(x=360, y=165)
+    def adicionar_administrador(administrador, posicao):
 
+        # DADOS
+        
+        nome_completo = administrador["Nome"]
+        telefone_completo = administrador["Telefone"]
+        email_completo = administrador["Email"]
+        endereco_completo = administrador["Endereço"]
 
-#     endereco_teste = ctk.CTkLabel(
-#         container,
-#         text=administrador_teste["Endereço"],
-#         text_color="black"
-#     )
-#     endereco_teste.place(x=540, y=165)
+        y = 165 + (posicao * 45)
 
 
-#     acoes_teste = ctk.CTkLabel(
-#         container,
-#         text=administrador_teste["Ações"],
-#         text_color="black"
-#     )
-#     acoes_teste.place(x=750, y=165)
+        # NOME
+        
+        nome_linha = ctk.CTkLabel(
+            container,
+            text=cortar_texto(nome_completo, 20),
+            text_color="black",
+            anchor="w",
+            width=150,
+            height=25
+        )
 
-# =========================
-# TEXTO COMPLETO
-# =========================
+        nome_linha.place(x=30, y=y)
 
-#     nome_completo = administrador_teste["Nome"]
-#     email_completo = administrador_teste["Email"]
-#     endereco_completo = administrador_teste["Endereço"]
 
+        
+        # TELEFONE
+        
 
+        telefone_linha = ctk.CTkLabel(
+            container,
+            text=telefone_completo,
+            text_color="black",
+            anchor="w",
+            width=150,
+            height=25
+        )
 
-# # NOME
+        telefone_linha.place(x=200, y=y)
 
-#     nome_teste.configure(
-#         text=cortar_texto(nome_completo, 20)
-#     )
 
+        # E-MAIL
+    
+        email_linha = ctk.CTkLabel(
+            container,
+            text=cortar_texto(email_completo, 25),
+            text_color="black",
+            anchor="w",
+            width=150,
+            height=25
+        )
 
-#     def mostrar_nome(event):
+        email_linha.place(x=360, y=y)
 
-#         nome_teste.configure(
-#             text=nome_completo
-#         )
 
-#         # Esconde o telefone
-#         telefone_teste.place_forget()
+        # ENDEREÇO
+        
 
-#         # Coloca o nome na frente
-#         nome_teste.lift()
+        endereco_linha = ctk.CTkLabel(
+            container,
+            text=cortar_texto(endereco_completo, 25),
+            text_color="black",
+            anchor="w",
+            width=150,
+            height=25
+        )
 
+        endereco_linha.place(x=540, y=y)
 
-#     def esconder_nome(event):
 
-#         nome_teste.configure(
-#             text=cortar_texto(nome_completo, 20)
-#         )
+        
+        # AÇÕES
+        
 
-#         # Mostra o telefone novamente
-#         telefone_teste.place(
-#             x=200,
-#             y=165
-#         )
+        acoes_linha = ctk.CTkLabel(
+            container,
+            text=administrador["Ações"],
+            text_color="black",
+            anchor="w",
+            width=100,
+            height=25
+        )
 
+        acoes_linha.place(x=750, y=y)
 
-#     nome_teste.bind("<Enter>", mostrar_nome)
-#     nome_teste.bind("<Leave>", esconder_nome)
 
+        
+        # BIND - NOME
+        
 
+        def mostrar_nome(event):
 
-# # E-MAIL
+            nome_linha.configure(
+                text=nome_completo
+            )
 
+            # Esconde o telefone
+            telefone_linha.place_forget()
 
-#     email_teste.configure(
-#         text=cortar_texto(email_completo, 25)
-#     )
+            # Coloca o nome na frente
+            nome_linha.lift()
 
 
-#     def mostrar_email(event):
+        def esconder_nome(event):
 
-#         email_teste.configure(
-#             text=email_completo
-#         )
+            nome_linha.configure(
+                text=cortar_texto(nome_completo, 20)
+            )
 
-#         # Esconde o endereço
-#         endereco_teste.place_forget()
+            # Mostra o telefone novamente
+            telefone_linha.place(
+                x=200,
+                y=y
+            )
 
-#         # Coloca o e-mail na frente
-#         email_teste.lift()
 
+        nome_linha.bind("<Enter>", mostrar_nome)
+        nome_linha.bind("<Leave>", esconder_nome)
 
-#     def esconder_email(event):
 
-#         email_teste.configure(
-#             text=cortar_texto(email_completo, 25)
-#         )
+        
+        # BIND - E-MAIL
+        
 
-#         # Mostra o endereço novamente
-#         endereco_teste.place(
-#             x=540,
-#             y=165
-#         )
+        def mostrar_email(event):
 
+            email_linha.configure(
+                text=email_completo
+            )
 
-#     email_teste.bind("<Enter>", mostrar_email)
-#     email_teste.bind("<Leave>", esconder_email)
+            # Esconde o endereço
+            endereco_linha.place_forget()
 
+            # Coloca o e-mail na frente
+            email_linha.lift()
 
 
-# # ENDEREÇO
+        def esconder_email(event):
 
-#     endereco_teste.configure(
-#         text=cortar_texto(endereco_completo, 25)
-#     )
+            email_linha.configure(
+                text=cortar_texto(email_completo, 25)
+            )
 
+            # Mostra o endereço novamente
+            endereco_linha.place(
+                x=540,
+                y=y
+            )
 
-#     def mostrar_endereco(event):
 
-#         endereco_teste.configure(
-#             text=endereco_completo
-#         )
+        email_linha.bind("<Enter>", mostrar_email)
+        email_linha.bind("<Leave>", esconder_email)
 
-#         # Esconde Ações
-#         acoes_teste.place_forget()
 
-#         # Coloca o endereço na frente
-#         endereco_teste.lift()
+        
+        # BIND - ENDEREÇO
+        
 
+        def mostrar_endereco(event):
 
-#     def esconder_endereco(event):
+            endereco_linha.configure(
+                text=endereco_completo
+            )
 
-#         endereco_teste.configure(
-#             text=cortar_texto(endereco_completo, 25)
-#         )
+            # Esconde Ações
+            acoes_linha.place_forget()
 
-#         # Mostra Ações novamente
-#         acoes_teste.place(
-#             x=750,
-#             y=165
-#         )
+            # Coloca o endereço na frente
+            endereco_linha.lift()
 
 
-#     endereco_teste.bind("<Enter>", mostrar_endereco)
-#     endereco_teste.bind("<Leave>", esconder_endereco)
+        def esconder_endereco(event):
 
+            endereco_linha.configure(
+                text=cortar_texto(endereco_completo, 25)
+            )
 
+            # Mostra Ações novamente
+            acoes_linha.place(
+                x=750,
+                y=y
+            )
 
 
-#     # FUNÇÃO PARA ESCONDER A TABELA
+        endereco_linha.bind("<Enter>", mostrar_endereco)
+        endereco_linha.bind("<Leave>", esconder_endereco)
 
-#     def esconder_tabela():
 
-#         # ESCONDE A TEBELA:
-#         nome.place_forget()
-#         telefone.place_forget()
-#         email.place_forget()
-#         endereco.place_forget()
-#         acoes.place_forget()
+    
+        # GUARDA OS WIDGETS DA LINHA
+        
 
-#         # ESCONDE OS DADOS:
+        linhas.append({
+            "nome": nome_linha,
+            "telefone": telefone_linha,
+            "email": email_linha,
+            "endereco": endereco_linha,
+            "acoes": acoes_linha
+        })
 
-#         nome_teste.place_forget()
-#         telefone_teste.place_forget()
-#         email_teste.place_forget()
-#         endereco_teste.place_forget()
-#         acoes_teste.place_forget()
 
+    
+    # FUNÇÃO PARA ESCONDER A TABELA
+    
 
+    def esconder_tabela():
 
-#     # FUNÇÃO PARA MOSTRAR A TABELA
+        # ESCONDE OS TÍTULOS
 
-#     def mostrar_tabela():
-#         # MOSTRA A TABELA NOVAMENTE:
+        nome.place_forget()
+        telefone.place_forget()
+        email.place_forget()
+        endereco.place_forget()
+        acoes.place_forget()
 
-#         nome.place(x=30, y=125)
-#         telefone.place(x=200, y=125)
-#         email.place(x=380, y=125)
-#         endereco.place(x=560, y=125)
-#         acoes.place(x=750, y=125)
 
-#         # MOSTRA OS DADOS NOVAMENTE:
+        # ESCONDE OS DADOS
 
-#         nome_teste.place(x=30, y=165)
-#         telefone_teste.place(x=200, y=165)
-#         email_teste.place(x=360, y=165)
-#         endereco_teste.place(x=540, y=165)
-#         acoes_teste.place(x=750, y=165)
+        for linha in linhas:
+
+            linha["nome"].place_forget()
+            linha["telefone"].place_forget()
+            linha["email"].place_forget()
+            linha["endereco"].place_forget()
+            linha["acoes"].place_forget()
+
+
+    
+    # FUNÇÃO PARA MOSTRAR A TABELA
+    
+
+    def mostrar_tabela():
+
+        # MOSTRA OS TÍTULOS
+
+        nome.place(x=30, y=125)
+        telefone.place(x=200, y=125)
+        email.place(x=380, y=125)
+        endereco.place(x=560, y=125)
+        acoes.place(x=750, y=125)
+
+
+        # MOSTRA OS DADOS
+
+        for indice, linha in enumerate(linhas):
+
+            y = 165 + (indice * 45)
+
+            linha["nome"].place(
+                x=30,
+                y=y
+            )
+
+            linha["telefone"].place(
+                x=200,
+                y=y
+            )
+
+            linha["email"].place(
+                x=360,
+                y=y
+            )
+
+            linha["endereco"].place(
+                x=540,
+                y=y
+            )
+
+            linha["acoes"].place(
+                x=750,
+                y=y
+            )
 
 
     # FUNÇÃO DO BOTÃO NOVO
+    
 
     def novo_cadastro():
 
-        # Esconde os títulos da tabela
+        # Esconde a tabela
+
         esconder_tabela()
+
 
         frame_cadastro = ctk.CTkFrame(
             container,
@@ -332,8 +401,9 @@ def tela_administradores(container):
         )
 
 
-
+        
         # TÍTULO DO FORMULÁRIO
+        
 
         label_titulo = ctk.CTkLabel(
             frame_cadastro,
@@ -345,7 +415,9 @@ def tela_administradores(container):
         label_titulo.place(x=30, y=25)
 
 
-        # Nome
+        
+        # NOME
+        
 
         label_nome = ctk.CTkLabel(
             frame_cadastro,
@@ -368,7 +440,9 @@ def tela_administradores(container):
         entry_nome.place(x=30, y=105)
 
 
-        # Telefone
+
+        # TELEFONE
+        
 
         label_telefone = ctk.CTkLabel(
             frame_cadastro,
@@ -391,7 +465,9 @@ def tela_administradores(container):
         entry_telefone.place(x=30, y=180)
 
 
-        # E-mail
+        
+        # E-MAIL
+        
 
         label_email = ctk.CTkLabel(
             frame_cadastro,
@@ -414,7 +490,9 @@ def tela_administradores(container):
         entry_email.place(x=30, y=255)
 
 
-        # Botão Cadastrar
+        
+        # BOTÃO CADASTRAR
+        
 
         def cadastrar():
 
@@ -433,13 +511,20 @@ def tela_administradores(container):
 
         cadastrar_botao.place(x=30, y=310)
 
-        # FUNÇÃO CANCELAR:
+
         
+        # FUNÇÃO CANCELAR
+        
+
         def cancelar_cadastro():
+
             frame_cadastro.destroy()
             mostrar_tabela()
 
-        # Botão Cancelar
+
+        
+        # BOTÃO CANCELAR
+        
 
         cancelar_botao = ctk.CTkButton(
             frame_cadastro,
@@ -455,7 +540,9 @@ def tela_administradores(container):
         cancelar_botao.place(x=240, y=310)
 
 
+
     # BOTÃO NOVO
+    
 
     novo = ctk.CTkButton(
         container,
@@ -471,7 +558,3 @@ def tela_administradores(container):
     )
 
     novo.place(x=750, y=35)
-
-
-
-
