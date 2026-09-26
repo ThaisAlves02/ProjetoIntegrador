@@ -3,10 +3,8 @@ import customtkinter as ctk
 
 def tela_administradores(container):
 
-    # =========================================================
     # TÍTULOS
-    # =========================================================
-
+    
     titulo1 = ctk.CTkLabel(
         container,
         text="Administradores",
@@ -89,6 +87,14 @@ def tela_administradores(container):
         return texto
 
 
+    def texto_ultrapassa_largura(widget, texto, largura_maxima):
+
+        widget.configure(text=texto)
+        widget.update_idletasks()
+
+        return widget.winfo_reqwidth() > largura_maxima
+
+
     
     # LISTA DAS LINHAS DA TABELA
     
@@ -155,7 +161,7 @@ def tela_administradores(container):
             height=25
         )
 
-        email_linha.place(x=360, y=y)
+        email_linha.place(x=380, y=y)
 
 
         # ENDEREÇO
@@ -170,7 +176,7 @@ def tela_administradores(container):
             height=25
         )
 
-        endereco_linha.place(x=540, y=y)
+        endereco_linha.place(x=560, y=y)
 
 
         
@@ -195,14 +201,15 @@ def tela_administradores(container):
 
         def mostrar_nome(event):
 
-            nome_linha.configure(
-                text=nome_completo
+            ultrapassa = texto_ultrapassa_largura(
+                nome_linha,
+                nome_completo,
+                170
             )
 
-            # Esconde o telefone
-            telefone_linha.place_forget()
+            if ultrapassa:
+                telefone_linha.place_forget()
 
-            # Coloca o nome na frente
             nome_linha.lift()
 
 
@@ -229,26 +236,26 @@ def tela_administradores(container):
 
         def mostrar_email(event):
 
-            email_linha.configure(
-                text=email_completo
+            ultrapassa = texto_ultrapassa_largura(
+                email_linha,
+                email_completo,
+                 180
             )
-
-            # Esconde o endereço
-            endereco_linha.place_forget()
-
-            # Coloca o e-mail na frente
+            
+            if ultrapassa:
+                endereco_linha.place_forget()
+            
             email_linha.lift()
 
 
         def esconder_email(event):
-
             email_linha.configure(
                 text=cortar_texto(email_completo, 25)
             )
 
             # Mostra o endereço novamente
             endereco_linha.place(
-                x=540,
+                x=560,
                 y=y
             )
 
@@ -263,14 +270,15 @@ def tela_administradores(container):
 
         def mostrar_endereco(event):
 
-            endereco_linha.configure(
-                text=endereco_completo
+            ultrapassa = texto_ultrapassa_largura(
+                endereco_linha,
+                endereco_completo,
+                190
             )
 
-            # Esconde Ações
-            acoes_linha.place_forget()
+            if ultrapassa:
+                acoes_linha.place_forget()
 
-            # Coloca o endereço na frente
             endereco_linha.lift()
 
 
@@ -362,12 +370,12 @@ def tela_administradores(container):
             )
 
             linha["email"].place(
-                x=360,
+                x=380,
                 y=y
             )
 
             linha["endereco"].place(
-                x=540,
+                x=560,
                 y=y
             )
 
@@ -390,7 +398,7 @@ def tela_administradores(container):
         frame_cadastro = ctk.CTkFrame(
             container,
             width=645,
-            height=395,
+            height=535,
             fg_color="white",
             corner_radius=12
         )
@@ -490,6 +498,45 @@ def tela_administradores(container):
         entry_email.place(x=30, y=255)
 
 
+        label_endereco = ctk.CTkLabel(
+            frame_cadastro,
+            text="Endereço",
+            text_color="black",
+            font=ctk.CTkFont(size=14)
+        )
+
+        label_endereco.place(x=30 , y=305)
+
+
+        entry_endereco = ctk.CTkEntry(
+            frame_cadastro,
+            placeholder_text="Endereço",
+            border_width=0,
+            width=400,
+            height=35
+        )
+
+        entry_endereco.place(x=30 , y=330)
+
+
+        label_acoes = ctk.CTkLabel(
+            frame_cadastro,
+            text="Ações",
+            text_color="black",
+            font=ctk.CTkFont(size=14)
+        )
+
+        label_acoes.place(x=30 , y=380)
+
+        entry_acoes = ctk.CTkEntry(
+            frame_cadastro,
+            placeholder_text="Ações",
+            border_width=0,
+            width=400,
+            height=35
+        )
+
+        entry_acoes.place(x=30 , y=405)
         
         # BOTÃO CADASTRAR
         
@@ -509,7 +556,7 @@ def tela_administradores(container):
             command=cadastrar
         )
 
-        cadastrar_botao.place(x=30, y=310)
+        cadastrar_botao.place(x=30, y=460)
 
 
         
@@ -537,7 +584,7 @@ def tela_administradores(container):
             command=cancelar_cadastro
         )
 
-        cancelar_botao.place(x=240, y=310)
+        cancelar_botao.place(x=240, y=460)
 
 
 
