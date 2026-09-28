@@ -16,30 +16,85 @@
 #    )
 
 import customtkinter as ctk
+import json
+import os
+from tkinter import messagebox
+
+# ==================================================
+# ARQUIVO ONDE AS ORDENS SERÃO SALVAS
+# ==================================================
+
+ARQUIVO_OS = "ordens_servico.json"
+#ARQUIVO_OS = os.path.join(
+ #   os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+  #  "ordens_servico.json"
+#)
+
+# ==================================================
+# FUNÇÃO PARA CARREGAR AS ORDENS DE SERVIÇO
+# ==================================================
+
+def carregar_ordens():
+
+    if not os.path.exists(ARQUIVO_OS):
+        return []
+
+    try:
+
+        with open(ARQUIVO_OS, "r", encoding="utf-8") as arquivo:
+            return json.load(arquivo)
+
+    except (json.JSONDecodeError, FileNotFoundError):
+
+        return []
+
+
+# ==================================================
+# FUNÇÃO PARA SALVAR AS ORDENS DE SERVIÇO
+# ==================================================
+
+def salvar_ordens(ordens):
+
+    with open(
+        ARQUIVO_OS,
+        "w",
+        encoding="utf-8"
+    ) as arquivo:
+
+        json.dump(
+            ordens,
+            arquivo,
+            ensure_ascii=False,
+            indent=4
+        )
+
+
+# ==================================================
+# TELA DE SERVIÇOS
+# ==================================================
 
 def tela_servicos(container):
 
-    #=================================================================#
-    # TÍTULO #
-    #=================================================================#
+    # ==================================================
+    # TÍTULO
+    # ==================================================
 
     titulo = ctk.CTkLabel(
         container,
-        text = "Serviços",
-        font = ("Arial", 28, "bold")
+        text="Serviços",
+        font=("Arial", 28, "bold")
     )
 
     titulo.pack(
-        anchor = "w",
-        padx = 32,
-        pady = (20, 10)
+        anchor="w",
+        padx=32,
+        pady=(20, 10)
     )
 
-    #====================================================================#
-    # DADOS DA ORDEM DE SERVIÇO #
-    #====================================================================#
+    # ==================================================
+    # DADOS DA ORDEM DE SERVIÇO
+    # ==================================================
 
-    
     dados = ctk.CTkFrame(container)
 
     dados.pack(
@@ -48,7 +103,10 @@ def tela_servicos(container):
         pady=5
     )
 
-    # Número da OS
+    # ==================================================
+    # NÚMERO DA OS
+    # ==================================================
+
     ctk.CTkLabel(
         dados,
         text="Nº da OS:"
@@ -59,9 +117,15 @@ def tela_servicos(container):
         pady=8
     )
 
+    # Carrega as OS existentes
+    ordens = carregar_ordens()
+
+    # Define o próximo número
+    proximo_numero = len(ordens) + 1
+
     numero_os = ctk.CTkLabel(
         dados,
-        text="0001"
+        text=f"{proximo_numero:04d}"
     )
 
     numero_os.grid(
@@ -71,7 +135,10 @@ def tela_servicos(container):
         pady=8
     )
 
-    # Cliente
+    # ==================================================
+    # CLIENTE
+    # ==================================================
+
     ctk.CTkLabel(
         dados,
         text="Cliente:"
@@ -95,7 +162,10 @@ def tela_servicos(container):
         pady=8
     )
 
-    # Tipo do motor
+    # ==================================================
+    # TIPO DO MOTOR
+    # ==================================================
+
     ctk.CTkLabel(
         dados,
         text="Tipo do motor:"
@@ -121,7 +191,10 @@ def tela_servicos(container):
         sticky="w"
     )
 
-    # Data de entrada
+    # ==================================================
+    # DATA DE ENTRADA
+    # ==================================================
+
     ctk.CTkLabel(
         dados,
         text="Data de entrada:"
@@ -145,7 +218,10 @@ def tela_servicos(container):
         pady=8
     )
 
-    # Previsão de entrega
+    # ==================================================
+    # DATA DE ENTREGA
+    # ==================================================
+
     ctk.CTkLabel(
         dados,
         text="Previsão de entrega:"
@@ -170,7 +246,7 @@ def tela_servicos(container):
     )
 
     # ==================================================
-    # TÍTULO DA TABELA
+    # TÍTULO DOS SERVIÇOS
     # ==================================================
 
     titulo_servicos = ctk.CTkLabel(
@@ -191,18 +267,18 @@ def tela_servicos(container):
 
     tabela = ctk.CTkScrollableFrame(
         container,
-        height=300
+        height=230
     )
 
     tabela.pack(
-        fill="both",
+        fill="x",
         expand=True,
         padx=32,
         pady=5
     )
 
     # ==================================================
-    # CABEÇALHO
+    # CABEÇALHO DA TABELA
     # ==================================================
 
     ctk.CTkLabel(
@@ -250,7 +326,7 @@ def tela_servicos(container):
     )
 
     # ==================================================
-    # SERVIÇOS
+    # LISTA DE SERVIÇOS
     # ==================================================
 
     servicos = [
@@ -347,8 +423,14 @@ def tela_servicos(container):
             pady=4
         )
 
+        # Guardamos também o nome do serviço
         campos.append(
-            (quantidade, valor, subtotal)
+            (
+                servico,
+                quantidade,
+                valor,
+                subtotal
+            )
         )
 
     # ==================================================
@@ -368,14 +450,14 @@ def tela_servicos(container):
     )
 
     # ==================================================
-    # FUNÇÃO PARA CALCULAR
+    # FUNÇÃO PARA CALCULAR O TOTAL
     # ==================================================
 
     def calcular_total():
 
         total = 0
 
-        for quantidade, valor, subtotal in campos:
+        for servico, quantidade, valor, subtotal in campos:
 
             try:
 
@@ -393,7 +475,7 @@ def tela_servicos(container):
                     text=f"R$ {resultado:.2f}".replace(".", ",")
                 )
 
-                total = total + resultado
+                total += resultado
 
             except ValueError:
 
@@ -404,6 +486,8 @@ def tela_servicos(container):
         total_label.configure(
             text=f"Valor total: R$ {total:.2f}".replace(".", ",")
         )
+
+        return total
 
     # ==================================================
     # BOTÃO CALCULAR
@@ -422,16 +506,254 @@ def tela_servicos(container):
     )
 
     # ==================================================
+    # FUNÇÃO PARA LIMPAR O FORMULÁRIO
+    # ==================================================
+
+    def limpar_formulario():
+
+        cliente.delete(0, "end")
+        motor.delete(0, "end")
+        data_entrada.delete(0, "end")
+        data_entrega.delete(0, "end")
+
+        for servico, quantidade, valor, subtotal in campos:
+
+            quantidade.delete(0, "end")
+            valor.delete(0, "end")
+
+            subtotal.configure(
+                text="R$ 0,00"
+            )
+
+        total_label.configure(
+            text="Valor total: R$ 0,00"
+        )
+
+    # ==================================================
+    # FUNÇÃO PARA FINALIZAR A ORDEM DE SERVIÇO
+    # ==================================================
+
+    def finalizar_os():
+
+        # ----------------------------------------------
+        # PEGA OS DADOS DIGITADOS
+        # ----------------------------------------------
+
+        nome_cliente = cliente.get().strip()
+        tipo_motor = motor.get().strip()
+        entrada = data_entrada.get().strip()
+        entrega = data_entrega.get().strip()
+
+        # ----------------------------------------------
+        # VALIDAÇÃO
+        # ----------------------------------------------
+
+        if not nome_cliente:
+
+            messagebox.showwarning(
+                "Atenção",
+                "Informe o nome do cliente."
+            )
+
+            return
+
+        if not tipo_motor:
+
+            messagebox.showwarning(
+                "Atenção",
+                "Informe o tipo do motor."
+            )
+
+            return
+
+        if not entrada:
+
+            messagebox.showwarning(
+                "Atenção",
+                "Informe a data de entrada."
+            )
+
+            return
+
+        if not entrega:
+
+            messagebox.showwarning(
+                "Atenção",
+                "Informe a previsão de entrega."
+            )
+
+            return
+
+        # ----------------------------------------------
+        # CALCULA O TOTAL
+        # ----------------------------------------------
+
+        total = 0
+
+        lista_servicos = []
+
+        for servico, quantidade, valor, subtotal in campos:
+
+            texto_quantidade = quantidade.get().strip()
+            texto_valor = valor.get().strip()
+
+            # Se os dois campos estiverem vazios,
+            # significa que o serviço não foi utilizado.
+
+            if not texto_quantidade and not texto_valor:
+                continue
+
+            try:
+
+                qtd = float(
+                    texto_quantidade.replace(",", ".")
+                )
+
+                preco = float(
+                    texto_valor.replace(",", ".")
+                )
+
+            except ValueError:
+
+                messagebox.showwarning(
+                    "Atenção",
+                    f"Verifique os valores do serviço:\n{servico}"
+                )
+
+                return
+
+            if qtd <= 0:
+
+                messagebox.showwarning(
+                    "Atenção",
+                    f"A quantidade do serviço deve ser maior que zero:\n{servico}"
+                )
+
+                return
+
+            if preco < 0:
+
+                messagebox.showwarning(
+                    "Atenção",
+                    f"O valor do serviço não pode ser negativo:\n{servico}"
+                )
+
+                return
+
+            resultado = qtd * preco
+
+            lista_servicos.append(
+                {
+                    "nome": servico,
+                    "quantidade": qtd,
+                    "valor": preco,
+                    "subtotal": resultado
+                }
+            )
+
+            total += resultado
+
+        # ----------------------------------------------
+        # VERIFICA SE EXISTE PELO MENOS UM SERVIÇO
+        # ----------------------------------------------
+
+        if not lista_servicos:
+
+            messagebox.showwarning(
+                "Atenção",
+                "Informe pelo menos um serviço."
+            )
+
+            return
+
+        # ----------------------------------------------
+        # CARREGA AS ORDENS EXISTENTES
+        # ----------------------------------------------
+
+        ordens = carregar_ordens()
+
+        # ----------------------------------------------
+        # DEFINE O NÚMERO DA NOVA OS
+        # ----------------------------------------------
+
+        novo_numero = len(ordens) + 1
+
+        # ----------------------------------------------
+        # CRIA A NOVA ORDEM DE SERVIÇO
+        # ----------------------------------------------
+
+        nova_os = {
+            "numero_os": novo_numero,
+            "cliente": nome_cliente,
+            "motor": tipo_motor,
+            "data_entrada": entrada,
+            "data_entrega": entrega,
+            "servicos": lista_servicos,
+            "total": total
+        }
+
+        # ----------------------------------------------
+        # ADICIONA A OS À LISTA
+        # ----------------------------------------------
+
+        ordens.append(nova_os)
+
+        # ----------------------------------------------
+        # SALVA NO JSON
+        # ----------------------------------------------
+
+        try:
+
+            salvar_ordens(ordens)
+
+        except Exception as erro:
+
+            messagebox.showerror(
+                "Erro",
+                f"Não foi possível salvar a ordem de serviço.\n\n{erro}"
+            )
+
+            return
+
+        # ----------------------------------------------
+        # MOSTRA MENSAGEM DE SUCESSO
+        # ----------------------------------------------
+
+        messagebox.showinfo(
+            "Sucesso",
+            f"Ordem de Serviço Nº {novo_numero:04d} "
+            f"finalizada com sucesso!"
+        )
+
+        # ----------------------------------------------
+        # LIMPA O FORMULÁRIO
+        # ----------------------------------------------
+
+        limpar_formulario()
+
+        # ----------------------------------------------
+        # ATUALIZA O NÚMERO DA PRÓXIMA OS
+        # ----------------------------------------------
+
+        numero_os.configure(
+            text=f"{novo_numero + 1:04d}"
+        )
+
+    # ==================================================
     # BOTÃO FINALIZAR
     # ==================================================
 
     botao_finalizar = ctk.CTkButton(
         container,
         text="Finalizar Ordem de Serviço",
-        height=40
+        height=40,
+        command=finalizar_os
     )
 
     botao_finalizar.pack(
         padx=32,
         pady=(5, 20)
     )
+
+
+
