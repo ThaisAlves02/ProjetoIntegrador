@@ -200,7 +200,7 @@ def tela_clientes(container):
 
         frame_cadastro = ctk.CTkFrame(
         frame_conteudo, 
-         width=500,
+            width=500,
             height=460,
             fg_color=cor_frame,
             border_width=1,
