@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
-from models.cliente_model import carregar_clientes, salvar_clientes
+from model.cliente_model import carregar_clientes, salvar_clientes
 import re
 
 #----------------------------------------------------------
