@@ -1,7 +1,14 @@
 import customtkinter as ctk
 from tkinter import messagebox
-from model.cliente_model import carregar_clientes, salvar_clientes
-import re
+
+#----------------------------------------------------------
+# CÓDIGO NOVO DE IMPORTAÇÃO (Padrão MVC):
+#----------------------------------------------------------
+from controller.cliente_controller import (
+    listar_clientes_controller,
+    cadastrar_cliente_controller,
+    excluir_cliente_controller
+)
 
 #----------------------------------------------------------
 # CONFIGURAÇÃO DE COR
@@ -13,18 +20,15 @@ borda_frame = "#e0e0e0"
 cor_botao = "#262753"
 
 
-
 def tela_clientes(container):
     
     frame_conteudo = ctk.CTkFrame(container, fg_color="transparent")
     frame_conteudo.pack(expand=True, fill="both")
 
-    titulo = ctk.CTkLabel(
-        frame_conteudo,
+    titulo = ctk.CTkLabel(frame_conteudo,
         text="Clientes",
         font=("Arial", 28, "bold")
-    )
-    titulo.pack(
+    ).pack(
         anchor="w",
         padx=32,
         pady=(30,0)
@@ -35,8 +39,7 @@ def tela_clientes(container):
         text="Cadastro de clientes com nome, CPF, telefone, e-mail e endereço.",
         text_color=sub_titulo,
         font=("Arial", 14)
-    )
-    subtitulo.pack( 
+    ).pack( 
         anchor="w",
         padx=32,
         pady=0
@@ -61,19 +64,19 @@ def tela_clientes(container):
     nome.place(x=20, y=8)
    
     telefone = ctk.CTkLabel(frame_cabecalho, text="Telefone", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    telefone.place(x=170, y=8)
+    telefone.place(x=200, y=8)
 
     endereco = ctk.CTkLabel(frame_cabecalho, text="Endereço", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    endereco.place(x=290, y=8)
+    endereco.place(x=360, y=8)
    
     email = ctk.CTkLabel(frame_cabecalho, text="E-mail", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    email.place(x=480, y=8)
+    email.place(x=540, y=8)
    
     cpf = ctk.CTkLabel(frame_cabecalho, text="CPF", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    cpf.place(x=625, y=8)
+    cpf.place(x=630, y=8)
 
     acoes = ctk.CTkLabel(frame_cabecalho, text="Ações", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    acoes.place(x=730, y=8)
+    acoes.place(x=720, y=8)
     
     frame_rolagem_linhas = ctk.CTkScrollableFrame(
         frame_conteudo,
@@ -95,7 +98,8 @@ def tela_clientes(container):
             c.destroy()
         componentes_das_linhas_da_tabela.clear()
 
-        clientes = carregar_clientes()
+        # CÓDIGO NOVO (Padrão MVC):
+        clientes = listar_clientes_controller()
 
         if not clientes:
             frame_vazio = ctk.CTkFrame(
@@ -120,7 +124,7 @@ def tela_clientes(container):
 #----------------------------------------------------------
 # LINHA DE DADOS / STATUS DA TABELA
 #----------------------------------------------------------
-        for i, cliente in enumerate(clientes):
+        for _, cliente in enumerate(clientes): #Alterado o I por _
             frame_linha = ctk.CTkFrame(
                 frame_rolagem_linhas, 
                 height=50, 
@@ -133,23 +137,16 @@ def tela_clientes(container):
             frame_linha.pack_propagate(False) 
             componentes_das_linhas_da_tabela.append(frame_linha)
 
-            nome_completo = f"{cliente['Nome']} {cliente['Sobrenome']}"
+            nome_completo = f"{cliente.get('Nome', '')} {cliente.get('Sobrenome', '')}"
             ctk.CTkLabel(frame_linha, text=nome_completo, font=("Arial", 13), text_color="black").place(x=20, y=12)
-            ctk.CTkLabel(frame_linha, text=cliente['Telefone'], font=("Arial", 13), text_color="black").place(x=200, y=12)
+            ctk.CTkLabel(frame_linha, text=cliente.get('Telefone', ''), font=("Arial", 13), text_color="black").place(x=200, y=12)
             ctk.CTkLabel(frame_linha, text=cliente.get('Endereço', 'Não informado'), font=("Arial", 13), text_color="black").place(x=360, y=12)
-            ctk.CTkLabel(frame_linha, text=cliente['Email'] if cliente['Email'] else 'Não informado', font=("Arial", 13), text_color="black").place(x=540, y=12)
+            ctk.CTkLabel(frame_linha, text=cliente.get('Email', 'Não informado'), font=("Arial", 13), text_color="black").place(x=540, y=12)
 
+            # CÓDIGO NOVO (Padrão MVC):
             def deletar_cliente(c=cliente):
                 if messagebox.askyesno("Confirmar Exclusão", f"Deseja realmente excluir o cadastro de {c['Nome']}?"):
-                    lista_atual = carregar_clientes()
-                    lista_nova = []
-
-                    for cliente_da_vez in lista_atual:
-                        if cliente_da_vez['Nome'] == c['Nome'] and cliente_da_vez['Telefone'] == c['Telefone']:
-                            continue 
-                        lista_nova.append(cliente_da_vez)
-
-                    salvar_clientes(lista_nova)
+                    excluir_cliente_controller(['Nome'], c['Telefone'])
                     atualizar_tabela_visual()
 
             botao_excluir = ctk.CTkButton(
@@ -160,31 +157,15 @@ def tela_clientes(container):
             botao_excluir.place(x=710, y=11)
 
 #----------------------------------------------------------
-# FUNÇÕES VALIDAR E-MAIL E VALIDAR TELEFONE
-#----------------------------------------------------------
-
-    def validar_email(email):
-        if not email: # Se estiver vazio é válido já que é opcional.
-            return True
-        padrao = r"^[\w\.\-]+@[\w\-]+\.[a-zA-Z]{2,}$"
-        return re.match(padrao, email) is not None
-
-
-    def validar_telefone(telefone):
-        padrao = r"^(\(\d{2}\)\s?)?\d{4,5}-?\d{4}$"
-        return re.match(padrao, telefone) is not None
-
-#----------------------------------------------------------
 # FUNÇÃO BOTÃO NOVO CADASTRO
 #----------------------------------------------------------
     def novo_cadastro():
-        # Esconde temporariamente os elementos do fundo para focar no cadastro.
         frame_cabecalho.place_forget()
         for c in componentes_das_linhas_da_tabela:
             c.pack_forget()
 
         frame_cadastro = ctk.CTkFrame(
-        frame_conteudo, 
+            frame_conteudo, 
             width=500,
             height=460,
             fg_color=cor_frame,
@@ -202,72 +183,25 @@ def tela_clientes(container):
             text_color="black")
         titulo.pack(padx=50, pady=(25,15))
 
-        entry_nome = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="Nome *", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_nome = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome *", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_nome.pack(pady=6)
 
-        entry_sobrenome = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="Sobrenome *", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_sobrenome = ctk.CTkEntry(frame_cadastro, placeholder_text="Sobrenome *", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_sobrenome.pack(pady=6)
 
-        entry_telefone = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="Telefone (DDD) 99999-9999 *", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_telefone = ctk.CTkEntry(frame_cadastro, placeholder_text="Telefone (DDD) 99999-9999 *", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_telefone.pack(pady=6)
 
-        entry_endereco = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="Endereço", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_endereco = ctk.CTkEntry(frame_cadastro, placeholder_text="Endereço", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_endereco.pack(pady=6)
 
-        entry_email = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="E-mail (Opcional)", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_email = ctk.CTkEntry(frame_cadastro, placeholder_text="E-mail (Opcional)", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_email.pack(pady=6)
 
-        entry_cpf = ctk.CTkEntry(
-            frame_cadastro, 
-            placeholder_text="CPF *", 
-            border_width=2, 
-            width=420, 
-            height=40, 
-            text_color="black", 
-            fg_color="white", 
-            border_color="gray")
+        entry_cpf = ctk.CTkEntry(frame_cadastro, placeholder_text="CPF *", border_width=2, width=420, height=40, text_color="black", fg_color="white", border_color="gray")
         entry_cpf.pack(pady=6)
 
+        # CÓDIGO NOVO (Padrão MVC):
         def executar_cadastro():
             nome = entry_nome.get().strip()
             sobrenome = entry_sobrenome.get().strip()
@@ -276,34 +210,18 @@ def tela_clientes(container):
             email = entry_email.get().strip()
             cpf = entry_cpf.get().strip()
 
-            if not nome or not sobrenome or not telefone or not cpf:
-                messagebox.showerror("Erro", "Campos com asterisco (*) são obrigatórios.")
-                return
+            # Envia os dados para o Controller processar e tratar
+            sucesso, mensagem = cadastrar_cliente_controller(
+                nome, sobrenome, telefone, endereco, email, cpf
+            )
 
-            if not validar_email(email):
-                messagebox.showerror("Erro", "Email inválido. Use o formato nome@dominio.com")
-                return
-
-            if not validar_telefone(telefone):
-                messagebox.showerror("Erro", "Telefone inválido. Use (85) 99999-9999 ou 85999999999")
-                return
-
-            novo_cliente = {
-                "Nome": nome,
-                "Sobrenome": sobrenome,
-                "Telefone": telefone,
-                "Endereço": endereco if endereco else "Não informado",
-                "Email": email
-            }
-
-            lista_atual = carregar_clientes()
-            lista_atual.append(novo_cliente)
-            salvar_clientes(lista_atual)
-
-            messagebox.showinfo("Sucesso", "Cliente cadastrado com sucesso!")
-            frame_cadastro.destroy()
-            frame_cabecalho.place(x=32, y=115)
-            atualizar_tabela_visual()
+            if sucesso:
+                messagebox.showinfo("Sucesso", mensagem)
+                frame_cadastro.destroy()
+                frame_cabecalho.place(x=32, y=115)
+                atualizar_tabela_visual()
+            else:
+                messagebox.showerror("Erro", mensagem)
 
         def cancelar():
             frame_cadastro.destroy()
@@ -321,7 +239,7 @@ def tela_clientes(container):
             height=40,
             command=executar_cadastro
         )
-        cadastrar_botao.place(x= 57, y=383)
+        cadastrar_botao.place(x=57, y=383)
    
         # Botão Cancelar
         cancelar_botao = ctk.CTkButton(

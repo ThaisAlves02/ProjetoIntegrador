@@ -1,62 +1,50 @@
-from models.cliente_model import carregar_clientes, salvar_clientes
+import re
+from model.cliente_model import carregar_clientes, salvar_clientes
 
-def deletar_cliente(c=cliente):
-    clientes = carregar_clientes()
-    if messagebox.askyesno("Confirmar Exclusão", f"Deseja realmente excluir o cadastro de {c['Nome']}?"):
-        lista_atual = carregar_clientes()
-        lista_nova = []
+def validar_email(email):
+    if not email:
+        return True
+    padrao = r"^[\w\.\-]+@[\w\-]+\.[a-zA-Z]{2,}$"
+    return re.match(padrao, email) is not None
 
-        for cliente_da_vez in lista_atual:
-            if cliente_da_vez['Nome'] == c['Nome'] and cliente_da_vez['Telefone'] == c['Telefone']:
-                continue 
-            lista_nova.append(cliente_da_vez)
+def validar_telefone(telefone):
+    padrao = r"^(\(\d{2}\)\s?)?\d{4,5}-?\d{4}$"
+    return re.match(padrao, telefone) is not None
 
-        salvar_clientes(lista_nova)
-        atualizar_tabela_visual()
-
-def listar_clientes():
+def listar_clientes_controller():
     return carregar_clientes()
 
-def executar_cadastro():
-    nome = entry_nome.get().strip()
-    sobrenome = entry_sobrenome.get().strip()
-    telefone = entry_telefone.get().strip()
-    endereco = entry_endereco.get().strip()
-    email = entry_email.get().strip()
-    cpf = entry_cpf.get().strip()
-
+def cadastrar_cliente_controller(nome, sobrenome, telefone, endereco, email, cpf):
     if not nome or not sobrenome or not telefone or not cpf:
-        return("Erro", "Campos com asterisco (*) são obrigatórios.")
-        
+        return False, "Campos com asterisco (*) são obrigatórios."
 
     if not validar_email(email):
-        return("Erro", "Email inválido. Use o formato nome@dominio.com")
-        
+        return False, "E-mail inválido. Use o formato nome@dominio.com"
 
     if not validar_telefone(telefone):
-        return("Erro", "Telefone inválido. Use (85) 99999-9999 ou 85999999999")
-        
+        return False, "Telefone inválido. Use (85) 99999-9999 ou 85999999999"
 
     novo_cliente = {
         "Nome": nome,
         "Sobrenome": sobrenome,
         "Telefone": telefone,
         "Endereço": endereco if endereco else "Não informado",
-        "Email": email
+        "Email": email,
+        "CPF": cpf
     }
 
     lista_atual = carregar_clientes()
     lista_atual.append(novo_cliente)
     salvar_clientes(lista_atual)
+    return True, "Cliente cadastrado com sucesso!"
 
+def excluir_cliente_controller(cliente_para_deletar):
+    lista_atual = carregar_clientes()
 
-def validar_email(email):
-    if not email: # Se estiver vazio é válido já que é opcional.
-        return True
-    padrao = r"^[\w\.\-]+@[\w\-]+\.[a-zA-Z]{2,}$"
-    return re.match(padrao, email) is not None
+    for cliente in lista_atual:
+        if cliente['Nome'] == cliente_para_deletar['Nome'] and cliente['Telefone'] == cliente_para_deletar['Telefone']:
+            lista_atual.remove(cliente)
+            break  
 
-
-def validar_telefone(telefone):
-    padrao = r"^(\(\d{2}\)\s?)?\d{4,5}-?\d{4}$"
-    return re.match(padrao, telefone) is not None
+    salvar_clientes(lista_atual)
+    return True
