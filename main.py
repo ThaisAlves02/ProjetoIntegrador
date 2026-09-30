@@ -22,7 +22,7 @@ janela = ctk.CTk()
 
 janela.title("Sistema de Cadastro")
 janela.geometry("1100x650")
-janela.resizable(False, False)
+# janela.resizable(False, False)
 
 
 # ==================================================

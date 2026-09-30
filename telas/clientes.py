@@ -1,7 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
-import json
-import os
+from models.cliente_model import carregar_clientes, salvar_clientes
 import re
 
 #----------------------------------------------------------
@@ -13,23 +12,6 @@ sub_titulo = "#52677F"
 borda_frame = "#e0e0e0"
 cor_botao = "#262753"
 
-#----------------------------------------------------------
-# FUNÇÕES DO BANCO DE DADOS (JSON)
-#----------------------------------------------------------
-def carregar_clientes():
-    if not os.path.exists("clientes.json"):
-        with open("clientes.json", "w", encoding="utf-8") as arquivo:
-            json.dump([], arquivo, indent=4)
-        return []
-    with open("clientes.json", "r", encoding="utf-8") as arquivo:
-        try:
-            return json.load(arquivo)
-        except json.JSONDecodeError:
-            return []
-
-def salvar_clientes(lista_clientes):
-    with open("clientes.json", "w", encoding="utf-8") as arquivo:
-        json.dump(lista_clientes, arquivo, indent=4, ensure_ascii=False)
 
 
 def tela_clientes(container):
@@ -61,7 +43,7 @@ def tela_clientes(container):
     )
 
 #----------------------------------------------------------
-# DESIGN DA TABELA (AJUSTADO PARA OS 880px DO CONTAINER)
+# DESIGN DA TABELA
 #----------------------------------------------------------
     frame_cabecalho = ctk.CTkFrame(
         frame_conteudo,
@@ -87,9 +69,12 @@ def tela_clientes(container):
     email = ctk.CTkLabel(frame_cabecalho, text="E-mail", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
     email.place(x=540, y=8)
    
+    cpf = ctk.CTkLabel(frame_cabecalho, text="CPF", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
+    cpf.place(x=630, y=8)
+
     acoes = ctk.CTkLabel(frame_cabecalho, text="Ações", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
     acoes.place(x=720, y=8)
-
+    
     frame_rolagem_linhas = ctk.CTkScrollableFrame(
         frame_conteudo,
         width=796,
@@ -194,9 +179,9 @@ def tela_clientes(container):
 #----------------------------------------------------------
     def novo_cadastro():
         # Esconde temporariamente os elementos do fundo para focar no cadastro.
-        frame_cabecalho.place_forget()
+        frame_cabecalho.pack_forget()
         for c in componentes_das_linhas_da_tabela:
-            c.place_forget()
+            c.pack_forget()
 
         frame_cadastro = ctk.CTkFrame(
         frame_conteudo, 
@@ -272,6 +257,16 @@ def tela_clientes(container):
             border_color="gray")
         entry_email.pack(pady=6)
 
+        entry_cpf = ctk.CTkEntry(
+            frame_cadastro, 
+            placeholder_text="CPF *", 
+            border_width=2, 
+            width=420, 
+            height=40, 
+            text_color="black", 
+            fg_color="white", 
+            border_color="gray")
+        entry_cpf.pack(pady=6)
 
         def executar_cadastro():
             nome = entry_nome.get().strip()
@@ -279,8 +274,9 @@ def tela_clientes(container):
             telefone = entry_telefone.get().strip()
             endereco = entry_endereco.get().strip()
             email = entry_email.get().strip()
+            cpf = entry_cpf.get().strip()
 
-            if not nome or not sobrenome or not telefone:
+            if not nome or not sobrenome or not telefone or not cpf:
                 messagebox.showerror("Erro", "Campos com asterisco (*) são obrigatórios.")
                 return
 
@@ -336,10 +332,10 @@ def tela_clientes(container):
             command=cancelar
         )
         cancelar_botao.place(x=252, y=340)
-   
+        
     # BOTÃO NOVO
     novo = ctk.CTkButton(
-        container,
+        frame_conteudo,
         text="+ Novo",
         font=ctk.CTkFont(size=15, weight="bold"),
         width=100,
