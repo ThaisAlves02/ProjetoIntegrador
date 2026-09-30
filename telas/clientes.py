@@ -61,19 +61,19 @@ def tela_clientes(container):
     nome.place(x=20, y=8)
    
     telefone = ctk.CTkLabel(frame_cabecalho, text="Telefone", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    telefone.place(x=200, y=8)
+    telefone.place(x=170, y=8)
 
     endereco = ctk.CTkLabel(frame_cabecalho, text="Endereço", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    endereco.place(x=360, y=8)
+    endereco.place(x=290, y=8)
    
     email = ctk.CTkLabel(frame_cabecalho, text="E-mail", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    email.place(x=540, y=8)
+    email.place(x=480, y=8)
    
     cpf = ctk.CTkLabel(frame_cabecalho, text="CPF", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    cpf.place(x=630, y=8)
+    cpf.place(x=625, y=8)
 
     acoes = ctk.CTkLabel(frame_cabecalho, text="Ações", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    acoes.place(x=720, y=8)
+    acoes.place(x=730, y=8)
     
     frame_rolagem_linhas = ctk.CTkScrollableFrame(
         frame_conteudo,
@@ -181,7 +181,7 @@ def tela_clientes(container):
         # Esconde temporariamente os elementos do fundo para focar no cadastro.
         frame_cabecalho.place_forget()
         for c in componentes_das_linhas_da_tabela:
-            c.place_forget()
+            c.pack_forget()
 
         frame_cadastro = ctk.CTkFrame(
         frame_conteudo, 
@@ -309,6 +309,9 @@ def tela_clientes(container):
             frame_cadastro.destroy()
             frame_cabecalho.place(x=32, y=115)
 
+            for c in componentes_das_linhas_da_tabela:
+                c.pack(pady=4, fill="x", padx=2)
+
         # Botão Cadastrar
         cadastrar_botao = ctk.CTkButton(
             frame_cadastro,
@@ -318,7 +321,7 @@ def tela_clientes(container):
             height=40,
             command=executar_cadastro
         )
-        cadastrar_botao.place(x= 57, y=340)
+        cadastrar_botao.place(x= 57, y=383)
    
         # Botão Cancelar
         cancelar_botao = ctk.CTkButton(
@@ -331,7 +334,7 @@ def tela_clientes(container):
             hover_color="#444444",
             command=cancelar
         )
-        cancelar_botao.place(x=252, y=340)
+        cancelar_botao.place(x=252, y=383)
         
     # BOTÃO NOVO
     novo = ctk.CTkButton(
