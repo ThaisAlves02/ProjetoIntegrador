@@ -179,9 +179,9 @@ def tela_clientes(container):
 #----------------------------------------------------------
     def novo_cadastro():
         # Esconde temporariamente os elementos do fundo para focar no cadastro.
-        frame_cabecalho.pack_forget()
+        frame_cabecalho.place_forget()
         for c in componentes_das_linhas_da_tabela:
-            c.pack_forget()
+            c.place_forget()
 
         frame_cadastro = ctk.CTkFrame(
         frame_conteudo, 
