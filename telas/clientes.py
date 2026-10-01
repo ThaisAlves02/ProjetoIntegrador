@@ -157,7 +157,7 @@ def tela_clientes(container):
             # CÓDIGO NOVO (Padrão MVC):
             def deletar_cliente(c=cliente):
                 if messagebox.askyesno("Confirmar Exclusão", f"Deseja realmente excluir o cadastro de {c['Nome']}?"):
-                    excluir_cliente_controller(['Nome'], c['Telefone'])
+                    excluir_cliente_controller(c)
                     atualizar_tabela_visual()
 
             botao_editar = ctk.CTkButton(
