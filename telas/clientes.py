@@ -7,7 +7,8 @@ from tkinter import messagebox
 from controller.cliente_controller import (
     listar_clientes_controller,
     cadastrar_cliente_controller,
-    excluir_cliente_controller
+    excluir_cliente_controller,
+    atualizar_cliente_controller 
 )
 
 #----------------------------------------------------------
@@ -50,33 +51,33 @@ def tela_clientes(container):
 #----------------------------------------------------------
     frame_cabecalho = ctk.CTkFrame(
         frame_conteudo,
-        width=816,
+        width=840,
         height=40,
         fg_color="#F8F9FA",
         border_width=1,
         border_color="#E0E0E0",
         corner_radius=10
     )
-    frame_cabecalho.place(x=32, y=115)
+    frame_cabecalho.place(x=20, y=115)
     frame_cabecalho.pack_propagate(False)
 
     nome = ctk.CTkLabel(frame_cabecalho, text="Nome", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    nome.place(x=20, y=8)
+    nome.place(x=50, y=8)
    
     telefone = ctk.CTkLabel(frame_cabecalho, text="Telefone", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    telefone.place(x=200, y=8)
+    telefone.place(x=170, y=8)
 
     endereco = ctk.CTkLabel(frame_cabecalho, text="Endereço", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    endereco.place(x=360, y=8)
+    endereco.place(x=310, y=8)
    
     email = ctk.CTkLabel(frame_cabecalho, text="E-mail", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    email.place(x=540, y=8)
+    email.place(x=448, y=8)
    
     cpf = ctk.CTkLabel(frame_cabecalho, text="CPF", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    cpf.place(x=630, y=8)
+    cpf.place(x=580, y=8)
 
     acoes = ctk.CTkLabel(frame_cabecalho, text="Ações", font=ctk.CTkFont(size=14, weight="bold"), text_color="#52677F")
-    acoes.place(x=720, y=8)
+    acoes.place(x=700, y=8)
     
     frame_rolagem_linhas = ctk.CTkScrollableFrame(
         frame_conteudo,
@@ -138,10 +139,20 @@ def tela_clientes(container):
             componentes_das_linhas_da_tabela.append(frame_linha)
 
             nome_completo = f"{cliente.get('Nome', '')} {cliente.get('Sobrenome', '')}"
-            ctk.CTkLabel(frame_linha, text=nome_completo, font=("Arial", 13), text_color="black").place(x=20, y=12)
-            ctk.CTkLabel(frame_linha, text=cliente.get('Telefone', ''), font=("Arial", 13), text_color="black").place(x=200, y=12)
-            ctk.CTkLabel(frame_linha, text=cliente.get('Endereço', 'Não informado'), font=("Arial", 13), text_color="black").place(x=360, y=12)
-            ctk.CTkLabel(frame_linha, text=cliente.get('Email', 'Não informado'), font=("Arial", 13), text_color="black").place(x=540, y=12)
+
+            endereco_texto = cliente.get('Endereço', 'Não informado')
+            if len(endereco_texto) > 22:
+                endereco_texto = endereco_texto[:19] + "..."
+
+            email_texto = cliente.get('Email', 'Não informado')
+            if len(email_texto) > 22:
+                email_texto = email_texto[:19] + "..."
+
+            ctk.CTkLabel(frame_linha, text=nome_completo, font=("Arial", 13), text_color="black").place(x=30, y=12)  
+            ctk.CTkLabel(frame_linha, text=cliente.get('Telefone', ''), font=("Arial", 13), text_color="black").place(x=150, y=12)
+            ctk.CTkLabel(frame_linha, text=endereco_texto, font=("Arial", 13), text_color="black").place(x=287, y=12)
+            ctk.CTkLabel(frame_linha, text=email_texto, font=("Arial", 13), text_color="black").place(x=390, y=12)
+            ctk.CTkLabel(frame_linha, text=cliente.get('CPF', ''), font=("Arial", 13), text_color="black").place(x=535, y=12)
 
             # CÓDIGO NOVO (Padrão MVC):
             def deletar_cliente(c=cliente):
@@ -149,9 +160,16 @@ def tela_clientes(container):
                     excluir_cliente_controller(['Nome'], c['Telefone'])
                     atualizar_tabela_visual()
 
+            botao_editar = ctk.CTkButton(
+                frame_linha, text="Editar", font=("Arial", 12, "bold"),
+                fg_color="#262753", hover_color="#1A1B3A", width=65, height=28,
+                command=lambda c=cliente: novo_cadastro(cliente_para_editar=c) # Envia os dados do cliente para a função editar
+            )
+            botao_editar.place(x=635, y=11)
+
             botao_excluir = ctk.CTkButton(
                 frame_linha, text="Excluir", font=("Arial", 12, "bold"),
-                fg_color="#FF4D4D", hover_color="#CC0000", width=70, height=28,
+                fg_color="#FF4D4D", hover_color="#CC0000", width=65, height=28,
                 command=deletar_cliente
             )
             botao_excluir.place(x=710, y=11)
@@ -159,7 +177,7 @@ def tela_clientes(container):
 #----------------------------------------------------------
 # FUNÇÃO BOTÃO NOVO CADASTRO
 #----------------------------------------------------------
-    def novo_cadastro():
+    def novo_cadastro(cliente_para_editar=None): # Adicionado o parâmetro opcional
         frame_cabecalho.place_forget()
         for c in componentes_das_linhas_da_tabela:
             c.pack_forget()
@@ -210,7 +228,6 @@ def tela_clientes(container):
             email = entry_email.get().strip()
             cpf = entry_cpf.get().strip()
 
-            # Envia os dados para o Controller processar e tratar
             sucesso, mensagem = cadastrar_cliente_controller(
                 nome, sobrenome, telefone, endereco, email, cpf
             )
@@ -240,7 +257,7 @@ def tela_clientes(container):
             command=executar_cadastro
         )
         cadastrar_botao.place(x=57, y=383)
-   
+
         # Botão Cancelar
         cancelar_botao = ctk.CTkButton(
             frame_cadastro,
@@ -253,6 +270,42 @@ def tela_clientes(container):
             command=cancelar
         )
         cancelar_botao.place(x=252, y=383)
+
+        # ----------------------------------------------------------
+        # FUNÇÃO EDITAR SEGUINDO O PADRÃO MVC (Ajustada)
+        # ----------------------------------------------------------
+        if cliente_para_editar:
+            telefone_antigo = cliente_para_editar.get('Telefone')
+
+            entry_nome.insert(0, cliente_para_editar.get('Nome', ''))
+            entry_sobrenome.insert(0, cliente_para_editar.get('Sobrenome', ''))
+            entry_telefone.insert(0, cliente_para_editar.get('Telefone', ''))
+            entry_endereco.insert(0, cliente_para_editar.get('Endereço', ''))
+            entry_email.insert(0, cliente_para_editar.get('Email', ''))
+            entry_cpf.insert(0, cliente_para_editar.get('CPF', ''))
+
+            def executar_atualizacao():
+                nome_novo = entry_nome.get().strip()
+                sobrenome_novo = entry_sobrenome.get().strip()
+                telefone_novo = entry_telefone.get().strip()
+                endereco_novo = entry_endereco.get().strip()
+                email_novo = entry_email.get().strip()
+                cpf_novo = entry_cpf.get().strip()
+
+                sucesso, mensagem = atualizar_cliente_controller(
+                    telefone_antigo, nome_novo, sobrenome_novo, telefone_novo, endereco_novo, email_novo, cpf_novo
+                )
+
+                if sucesso:
+                    messagebox.showinfo("Sucesso", mensagem)
+                    frame_cadastro.destroy()
+                    frame_cabecalho.place(x=32, y=115)
+                    atualizar_tabela_visual()
+                else:
+                    messagebox.showerror("Erro", mensagem)
+
+            cadastrar_botao.configure(text="Salvar Alterações", command=executar_atualizacao)
+            titulo.configure(text="Editar cliente")
         
     # BOTÃO NOVO
     novo = ctk.CTkButton(
